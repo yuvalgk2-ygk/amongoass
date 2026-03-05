@@ -36,6 +36,9 @@ async def create_database(db: Database):
 async def get_deployment(deployment_id: uuid.UUID):
     data = get_deployment_postgres(deployment_id)
 
+    if data is None:
+        raise HTTPException(status_code=404, detail="Deployment not found")
+
     LOGGER.info(f"Returned {data} from the deployments table")
     return Response(content=f"{data}", status_code=status.HTTP_200_OK)
 

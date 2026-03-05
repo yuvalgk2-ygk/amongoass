@@ -29,14 +29,12 @@ def get_deployment_id(db: Database) -> uuid.UUID:
     return cursor.fetchone()
 
 def get_deployment_postgres(deployment_id: uuid.UUID):
-    select_query = """
-    SELECT * EXCEPT username FROM deployments
-    WHERE id = '%s'
+    select_query = f"""
+    SELECT id, db_name, status, TO_CHAR(creation_time, 'YYYY-MM-DD HH24:MI:SS') FROM deployments
+    WHERE id = '{deployment_id}'
     """
 
-    data = deployment_id
-
-    cursor.execute(select_query, data)
+    cursor.execute(select_query)
     connection.commit()
 
     return cursor.fetchone()
