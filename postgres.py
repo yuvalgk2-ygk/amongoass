@@ -1,7 +1,7 @@
 import uuid
-import enum
+from typing import Literal, get_args
 
-from sqlalchemy import String, Enum, DateTime, create_engine
+from sqlalchemy import String, Enum, DateTime, create_engine, func
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column
 
 import logging
@@ -9,18 +9,20 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
-class Status(enum.Enum):
-    CREATED = 'created',
-    DELETED = 'deleted'
-
+Status = Literal['created', 'deleted']
 
 Base = declarative_base()
 
 class Deployments(Base):
     __tablename__ = 'deployments'
-    id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4(), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(server_default=func.gen_random_uuid(), primary_key=True)
     db_name: Mapped[str] = mapped_column(String(30))
-    status: Mapped[Enum] = mapped_column(Enum(Status))
+    status: Mapped[Status] = mapped_column(Enum(
+        *get_args(Status),
+        name="database_status",
+        create_constraint=True,
+        validate_strings=True,
+    ))
     username: Mapped[str] = mapped_column(String(30))
     creation_time: Mapped[DateTime] = mapped_column(DateTime)
 

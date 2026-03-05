@@ -1,0 +1,5 @@
+host: str = 'localhost'
+user: str = 'postgres'
+password: str = 'postgres'
+database: str = 'a_mongo_ass_db'
+port: str = '5432'

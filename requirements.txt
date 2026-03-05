@@ -1,2 +1,6 @@
 psycopg2-binary
 sqlalchemy
+pymongo
+fastapi
+uvicorn
+pydantic
