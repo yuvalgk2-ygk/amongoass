@@ -38,3 +38,35 @@ def get_deployment_postgres(deployment_id: uuid.UUID):
     connection.commit()
 
     return cursor.fetchone()
+
+def get_deployment_username(deployment_id: uuid.UUID):
+    select_query = f"""
+    SELECT username FROM deployments
+    WHERE id = '{deployment_id}'
+    """
+
+    cursor.execute(select_query)
+    connection.commit()
+
+    return cursor.fetchone()[0]
+
+def get_deployment_db_name(deployment_id: uuid.UUID):
+    select_query = f"""
+    SELECT db_name FROM deployments
+    WHERE id = '{deployment_id}'
+    """
+
+    cursor.execute(select_query)
+    connection.commit()
+
+    return cursor.fetchone()[0]
+
+def update_deployment_db_name(deployment_id: uuid.UUID, new_db_name: str):
+    update_query = f"""
+    UPDATE deployments
+    SET db_name = '{new_db_name}'
+    WHERE id = '{deployment_id}'
+    """
+
+    cursor.execute(update_query)
+    connection.commit()
