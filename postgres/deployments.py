@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from mongo.database import Database
+from mongo.models.database import Database
 from postgres import cursor, connection
 
 def add_deployment(db: Database):
@@ -61,10 +61,31 @@ def get_deployment_db_name(deployment_id: uuid.UUID):
 
     return cursor.fetchone()[0]
 
+def get_deployment_status(deployment_id: uuid.UUID):
+    select_query = f"""
+    SELECT status FROM deployments
+    WHERE id = '{deployment_id}'
+    """
+
+    cursor.execute(select_query)
+    connection.commit()
+
+    return cursor.fetchone()[0]
+
 def update_deployment_db_name(deployment_id: uuid.UUID, new_db_name: str):
     update_query = f"""
     UPDATE deployments
     SET db_name = '{new_db_name}'
+    WHERE id = '{deployment_id}'
+    """
+
+    cursor.execute(update_query)
+    connection.commit()
+
+def delete_db(deployment_id: uuid.UUID):
+    update_query = f"""
+    UPDATE deployments
+    SET status = 'deleted'
     WHERE id = '{deployment_id}'
     """
 
