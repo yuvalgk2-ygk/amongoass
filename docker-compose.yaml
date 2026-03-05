@@ -1,6 +1,7 @@
 networks:
   dem:
 services:
+
   postgres:
     image: postgres:latest
     restart: always
@@ -38,3 +39,4 @@ services:
       - postgres
     networks:
       - dem
+
