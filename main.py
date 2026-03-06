@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from mongo.routers.deployments_router import deployment_router
+from mongo_fastapi.routers.deployments_router import deployment_router
 
 app = FastAPI()
 
