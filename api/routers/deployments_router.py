@@ -1,16 +1,18 @@
 import uuid
+import logging
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Response, status, Header, Body
+from models.database import Database
+from models.databaseName import DatabaseName
+from mongo.mongo import add_database, delete_database
 
-from mongo_fastapi.models.db_name import DatabaseName
-from mongo_fastapi.mongo import add_database, delete_database
-from mongo_fastapi.models.database import Database
+from fastapi import APIRouter, HTTPException, Response, status, Header
+
 from postgres.deployments import (add_deployment, get_deployment_id, get_deployment_except_username,
                                   update_deployment_db_name, get_deployment_db_name, update_status_deployment_delete,
                                   check_deployment_id_exists, check_deployment_status,
                                   check_deployment_username_permission)
-import logging
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -45,7 +47,7 @@ async def get_deployment(deployment_id: uuid.UUID):
 
 
 @deployment_router.delete('/', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_deployment(deployment_id: uuid.UUID, username: Annotated[str, Header()]):
+async def delete_deployment_database(deployment_id: uuid.UUID, username: Annotated[str, Header()]):
     try:
         update_status_deployment_delete(deployment_id, username)
         LOGGER.info(f"Updated deployment status to deleted - id: {deployment_id}")
@@ -63,7 +65,7 @@ async def delete_deployment(deployment_id: uuid.UUID, username: Annotated[str, H
 
 
 @deployment_router.get('/connection_string/')
-async def get_deployment_connection_string(deployment_id: uuid.UUID, username: Annotated[str, Header()]):
+async def get_deployment_database_connection_string(deployment_id: uuid.UUID, username: Annotated[str, Header()]):
     #not finished!
     try:
         check_deployment_id_exists(deployment_id)
@@ -87,7 +89,7 @@ async def get_deployment_connection_string(deployment_id: uuid.UUID, username: A
 
 
 @deployment_router.put('/')
-async def update_deployment_name(deployment_id: Annotated[uuid.UUID, Header()], db_name: DatabaseName):
+async def update_deployment_database_name(deployment_id: Annotated[uuid.UUID, Header()], db_name: DatabaseName):
     #not finished!
     new_db_name = db_name.db_name
     old_db_name = get_deployment_db_name(deployment_id)
@@ -102,7 +104,7 @@ async def update_deployment_name(deployment_id: Annotated[uuid.UUID, Header()], 
         raise HTTPException(status_code=404, detail=str(e))
 
 
-    #rename db in mongo_fastapi cluster - not finished
+    #rename db in mongo cluster - not finished
     LOGGER.info(f"Updated db_name to {new_db_name} in the mongoDB cluster")
     return Response(content=f"{new_db_name} is now the name of the data base", status_code=status.HTTP_200_OK)
 

@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from mongo_fastapi.models.database import Database
+from models.database import Database
 from postgres import cursor, connection
 
 def add_deployment(db: Database):

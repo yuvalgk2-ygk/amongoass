@@ -1,0 +1,1 @@
+connection_string = 'mongodb://nraboy:password1234@localhost:27017/'

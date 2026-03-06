@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 
-from mongo_fastapi.models.database import Database
+from mongo.config import connection_string
+from models.database import Database
 
-client = MongoClient('mongodb://nraboy:password1234@localhost:27017/')
+client = MongoClient(connection_string)
 
 def add_database(db: Database):
     if db.db_name in client.list_database_names():
